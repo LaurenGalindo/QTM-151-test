@@ -1,0 +1,149 @@
+---
+title: "Introduction to QTM 151"
+output:
+  html_document:
+    df_print: paged
+    code_folding: hide
+---
+
+### 1. R Notebook
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+It is very similar to Rmarkdown. 
+
+```{r}
+plot(cars)
+```
+
+### 2. QTM 151
+QTM 150 and QTM 151 are sequel courses about introduction to R programming. We will keep learning more tools of data exploration.
+
+
+
+#### Textbooks:
+
+[R for Data Science](http://r4ds.had.co.nz/)
+
+#### Assessments:
+
+- In-lab quizzes 30%
+- Weekly Homework 35%
+- One in-lab exam  15%
+- Project 20%
+
+### 3. Review
+
+At the beginning, let's review what we have learned in QTM 150, the basic data visualisation and manipulation.
+
+#### Dataset Today: Tipping in the restaurant
+Food server's tips in restaurants may be influenced by
+many factors including the nature of the restaurant,
+size of the party, table locations in the restaurant, ... 
+To make appropriate assignments for the food servers, restaurant
+managers need to know what these factors are.
+
+In one restaurant, a food server recorded the following
+data on all customers they had served during a interval
+of two and a half months in early 1990, resulting in
+observations on 244 dining parties. 
+
+```{r}
+tips<-read.csv("tips.csv")
+```
+
+Variables Description: 
+
+- TOTBILL: Total bill, including tax, in dollars
+- TIP: Tip in dollars
+- SEX: Sex of person paying bill (M, F)
+- SMOKER: Smoker in party? (No, Yes)
+- DAY: Thur, Fri, Sat, Sun
+- TIME: day, night
+- SIZE: Size of the party
+
+
+#### Explore the dataset
+```{r}
+head(tips)
+str(tips)
+summary(tips)
+```
+
+
+Question 1: What factors affect tip rate?
+
+Tip:
+```{r, eval=TRUE}
+library(ggplot2)
+ggplot(tips, aes(x=tip))+
+  geom_histogram(binwidth = 0.2)
+```
+
+
+Tip vs total bill:
+```{r, eval=FALSE}
+ggplot(tips, aes(x=totbill, y=tip))+
+geom_point()+
+  geom_smooth(method="lm")
+
+ggplot(tips, aes(x=totbill, y=tip))+
+geom_point()+
+  geom_smooth(method="loess")
+```
+
+
+Tip vs sex:
+
+```{r, eval=F}  
+ggplot(tips, aes(x=sex, y=tip))+
+  geom_boxplot()
+```
+
+Tip vs sex and time:
+
+```{r, eval=F}
+ggplot(tips, aes(x=sex, y=tip))+
+  geom_boxplot()+
+  facet_grid(~time)
+
+ggplot(tips, aes(x=sex:time, y=tip))+
+  geom_boxplot()
+```
+
+Tip vs total bill by sex
+
+```{r, eval=F}
+ggplot(tips, aes(x=totbill, y=tip))+
+  geom_point()+
+  geom_smooth(method = "lm", se=F)+
+  facet_grid(~sex)
+
+ggplot(tips, aes(x=totbill, y=tip))+
+  geom_point(aes(color=sex))+
+  geom_smooth(method = "lm", se=F)+
+  geom_smooth(aes(group=sex, color=sex), method = "lm", se=F)
+```
+Pop Quiz:
+```{r}
+#Pop Quiz
+
+ggplot(tips, aes(x=totbill, y=tip))+
+  geom_point(aes(color=sex, shape=time))+
+  geom_smooth(aes(group=sex, color=sex), method = lm, se=F)
+```
+
+Tip vs total bill by sex and time
+
+```{r, eval=F}
+ggplot(tips, aes(x=totbill, y=tip))+
+  geom_point()+
+  facet_grid(sex~time)
+```
+
+Quick plot from ggplot:
+```{r, eval=F}
+qplot(tip, geom = "histogram", binwidth=0.3, data=tips)
+```
+
+
+
+
