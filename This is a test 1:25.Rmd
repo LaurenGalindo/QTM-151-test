@@ -1,0 +1,15 @@
+---
+title: "This is a test 1/25"
+author: "Lauren Galindo"
+date: "1/25/2019"
+output: html_document
+---
+
+I am just testing this out to see if it goes to my Github account
+```{r}
+#I really hope this works
+```
+
+```{r}
+library(ggplot2)
+```

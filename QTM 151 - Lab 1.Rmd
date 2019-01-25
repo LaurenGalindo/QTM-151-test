@@ -1,0 +1,150 @@
+---
+title: "QTM151Lab01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+R has a built in plot
+```{r}
+plot(tips$totbill, tips$tip, col = 'deepskyblue')
+```
+## qplot()
+
+The function *qplot()* in the package 'ggplot2' is very similar to the basic *plot()* function from the R base package. It can be used to create and combine easily different types of plots, it's great for allowing you to produce plots quickly, However, it remains less flexible than the function ggplot(), I highly recommend using *ggplot()* as it makes it easier to create complex graphics.
+
+This lab provides a brief introduction to *qplot()*, which stands for quick plot. 
+
+
+
+ Import the dataset:
+```{r}
+tips<-read.csv("tips.csv")
+summary(tips)
+```
+
+
+#### Ex1: Histogram
+
+```{r}
+ggplot(tips, aes(x=tip))+
+  geom_histogram(binwidth = 0.3)
+```
+
+qplot():
+```{r}
+#qplot(variables, geometry, color, size, shape, facet, dataset)
+qplot(tip, geom = "histogram", binwidth=0.3, data=tips)
+
+# add  blue color to the histogram
+qplot(tip, geom = "histogram", binwidth=0.3, color="blue", data=tips)
+# aesthetic parameters in qplot() always try to map the aesthetic to a variable, blue is a factor now
+
+# Use I(value) to indicate a specific value
+# You need to keep the I in the fill
+qplot(tip, geom = "histogram", binwidth=0.3, fill=I("blue"), data=tips)
+
+# set color according to the variable sex
+qplot(tip, geom = "histogram", binwidth=0.3, fill=sex, data=tips)
+
+```
+
+
+#### Ex2: Scatterplot 
+```{r}
+ggplot(tips, aes(x=totbill, y=tip))+
+geom_point()+
+  geom_smooth(method="lm")
+```
+
+
+```{r}
+qplot(totbill, tip, geom="point", data=tips) #What happens when you get rid of geom = "point" ?
+
+
+qplot(totbill, tip,  data=tips, color=I("red"))  # qplot() gives a scatterplot by default
+#How about when we change color to sex?
+qplot(totbill, tip,  data=tips, color=sex)
+```
+
+add more geom arguments by a vector of multiple geom names in turn
+
+```{r}
+qplot(totbill, tip, geom = c("point","smooth"), data=tips)
+
+#'lm' stands for linear model
+qplot(totbill, tip, geom = c("point","smooth"), method="lm", data=tips)
+
+# separate regression line for different sex. 
+# formula
+qplot(totbill, tip, geom = c("point","smooth"), method="lm", formula=y~x, color=sex, data=tips)
+
+#How about if we only wnt one line and not too? Heres when ggplot performs better through different layers
+qplot(totbill, tip, geom = c("point", "smooth"), method = 'lm' )
+
+ggplot(data = tips, aes(x=totbill, y-tip))
+```
+
+add labels 
+```{r}
+qplot(totbill, tip, geom = c("point","smooth"), data=tips, xlab="Total bill", ylab="Tip", main="Scatterplot")
+```
+
+
+
+
+
+#### Ex3: Side-by-side boxplot
+
+```{r}
+ggplot(tips, aes(x=sex, y=tip))+
+  geom_boxplot()
+
+# qplot
+qplot(sex, tip, geom="boxplot", data=tips)
+
+
+# add color to the variable sex
+qplot(x=sex, y=tip, geom = "boxplot", fill=sex, data=tips)
+qplot(x=sex, y=tip, geom = "boxplot", fill=I('blue'), data=tips)
+```
+Make sure to use I in qplot whenn you want to use color
+
+
+#### Ex4: Add more factors by facets
+
+```{r}
+#ggplot
+#facets give you the same graph but seperates it by variable
+ggplot(tips, aes(x=sex, y=tip))+
+geom_boxplot()+
+  facet_grid(~time)
+
+#qplot
+qplot(sex:time, tip, geom="boxplot", data=tips)
+
+qplot(sex, tip, geom="boxplot", facets=~time, data=tips) 
+
+
+
+# add another variable smoker, set the color to the variable sex
+qplot(sex, tip, geom = "boxplot", facets = time~smoker, data = tips)
+
+```
+
+###Git and Github
+
+  1. Download Git
+  2. Register for a free Github account
+  3. Create New project
+  4. Link your project from Git within R studio to Github: "Push and Pull"
+  
+
+
+Provide a qplot showing the relationship between totbill and tip, with subplots according to the variable day, each subplot will have separate regression lines based on sex.
+```{r}
+qplot(totbill, tip, geom = c("point","smooth"), method="lm",  color=sex,facets = ~day, data=tips)
+```
